@@ -8,13 +8,11 @@ from PyQt5 import uic
 import pymysql
 import pyautogui
 from selenium.webdriver.common.action_chains import ActionChains
+import threading
 
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType('untitled_kin.ui')
 
-# 이건 내 주석 1231
-# 이건 내 주석
-#jjr____
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -26,6 +24,7 @@ class MyWindow(QMainWindow):
         self.ui.kinButton.clicked.connect(self.kin_run)
         self.ui.answerButton.clicked.connect(self.answer_run)
         self.ui.kinListCall.clicked.connect(self.kin_list)
+        self.ui.whileTest.clicked.connect(self.thread_while_test)
         self.conn = pymysql.connect(
             host='112.170.181.184',
             user='python', password='ghkdgptjd2',
@@ -157,6 +156,21 @@ class MyWindow(QMainWindow):
             listtable.setItem(count, 4, QTableWidgetItem(self.mega_id))
             count += 1
 
+    def while_test(self):
+        cnt = 0
+        while True:
+            cnt += 1
+            # self.ui.textEdit.append(str(cnt))
+            self.ui.logArea.append(str(cnt))
+            time.sleep(1)
+            print(cnt)
+            if cnt == 10:
+                break
+
+    def thread_while_test(self):
+        # t = threading.Thread(target=self.while_test, args=())
+        t = threading.Thread(target=self.while_test)
+        t.start()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

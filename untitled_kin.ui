@@ -17,7 +17,7 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
       <width>821</width>
       <height>561</height>
@@ -56,7 +56,7 @@
         <x>20</x>
         <y>110</y>
         <width>771</width>
-        <height>421</height>
+        <height>151</height>
        </rect>
       </property>
      </widget>
@@ -92,12 +92,35 @@
        <string> 패스워드</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="whileTest">
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>40</y>
+        <width>91</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>whiletest</string>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="logArea">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>270</y>
+        <width>771</width>
+        <height>192</height>
+       </rect>
+      </property>
+     </widget>
      <widget class="QSplitter" name="splitter_2">
       <property name="geometry">
        <rect>
         <x>20</x>
         <y>40</y>
-        <width>391</width>
+        <width>239</width>
         <height>23</height>
        </rect>
       </property>
