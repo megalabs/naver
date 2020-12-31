@@ -12,7 +12,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType('untitled_kin.ui')
 
-
+# 1234
 class MyWindow(QMainWindow):
     def __init__(self):
         super(MyWindow, self).__init__()
