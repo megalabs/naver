@@ -24,7 +24,7 @@ class MyWindow(QMainWindow):
         self.ui.kinButton.clicked.connect(self.kin_run)
         self.ui.answerButton.clicked.connect(self.answer_run)
         self.ui.kinListCall.clicked.connect(self.kin_list)
-        self.ui.whileTest.clicked.connect(self.thread_while_test)
+        self.ui.whileCheck.clicked.connect(self.thread_while_test)
         self.conn = pymysql.connect(
             host='112.170.181.184',
             user='python', password='ghkdgptjd2',
@@ -37,9 +37,8 @@ class MyWindow(QMainWindow):
 
     def login_check(self):
         if self.ui.myid.text() == "solidstar" and self.ui.mypass.text() == "rhfemsqpf2":
-            # self.ui.textEdit.append("로그인OK")
             self.mega_id = self.ui.myid.text()
-            self.ui.textEdit.append(self.mega_id)
+            self.ui.logArea.append(self.mega_id)
             return True
         else:
             QMessageBox.about(self, "로그인오류", "아이디와 패스워드를 확인하세요")
@@ -75,10 +74,12 @@ class MyWindow(QMainWindow):
 
         self.fetchtest()
         self.driver.get('https://nid.naver.com/nidlogin.login')
+        self.ui.logArea.append("로그인창 로딩")
 
         idset = self.fetchtest()
         naver_id = idset['id']
         naver_pass = idset['pw']
+        self.ui.logArea.append("아이디추출중 1단계")
 
         # id, pw 입력할 곳을 찾습니다.
         tag_id = self.driver.find_element_by_name('id')
@@ -89,15 +90,21 @@ class MyWindow(QMainWindow):
         tag_id.click()
         pyperclip.copy(naver_id)
         tag_id.send_keys(Keys.CONTROL, 'v')
+        self.ui.logArea.append("아이디입력")
+        time.sleep(1)
 
         # pw 입력
         tag_pw.click()
         pyperclip.copy(naver_pass)
         tag_pw.send_keys(Keys.CONTROL, 'v')
+        self.ui.logArea.append("패스워드입력")
+        time.sleep(1)
 
         # 로그인 버튼을 클릭합니다
         login_btn = self.driver.find_element_by_id('log.login')
         login_btn.click()
+        self.ui.logArea.append("로그인버튼 클릭")
+        time.sleep(1)
 
     def kin_run(self):
         kinset = self.kinfetch()
@@ -158,19 +165,33 @@ class MyWindow(QMainWindow):
 
     def while_test(self):
         cnt = 0
+        self.ui.whileCheck.setChecked(True)
+        self.ui.whileCheck.setText("중지")
         while True:
             cnt += 1
-            # self.ui.textEdit.append(str(cnt))
-            self.ui.logArea.append(str(cnt))
-            time.sleep(1)
-            print(cnt)
+
+            self.ui.progressBar.setValue(cnt)
+            if not self.ui.whileCheck.isChecked():
+                self.ui.whileCheck.setText("시작")
+                break
             if cnt == 10:
+                self.ui.whileCheck.setChecked(False)
+                self.ui.whileCheck.setText("시작")
                 break
 
+            self.naver_login()
+            self.ui.logArea.append(str(cnt))
+            time.sleep(1)
+
     def thread_while_test(self):
-        # t = threading.Thread(target=self.while_test, args=())
-        t = threading.Thread(target=self.while_test)
-        t.start()
+        if self.ui.whileCheck.isChecked():
+            # t = threading.Thread(target=self.while_test, args=())
+            t = threading.Thread(target=self.while_test)
+            t.start()
+        else:
+            self.ui.whileCheck.setText("시작")
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
