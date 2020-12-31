@@ -11,7 +11,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType('untitled_kin.ui')
-
+#jjr____
 
 class MyWindow(QMainWindow):
     def __init__(self):
