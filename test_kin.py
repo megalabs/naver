@@ -26,6 +26,8 @@ class MyWindow(QMainWindow):
         self.ui.answerButton.clicked.connect(self.answer_run)
         self.ui.kinListCall.clicked.connect(self.kin_list)
         self.ui.whileCheck.clicked.connect(self.thread_while_test)
+        self.ui.answerUpdate.clicked.connect(self.answer_input)
+        self.ui.answerListCall.clicked.connect(self.answer_list)
         self.conn = pymysql.connect(
             host='112.170.181.184',
             user='kin', password='ghkdgptjd2',
@@ -111,9 +113,6 @@ class MyWindow(QMainWindow):
         self.ui.logArea.append("로그인버튼 클릭")
         time.sleep(1)
 
-
-
-
     def kin_run(self):
 
         try:
@@ -127,7 +126,6 @@ class MyWindow(QMainWindow):
         kindoc = kinset['doc']
         kinno = kinset['no']
 
-
         # 해당 지식인 글로 이동
         self.driver.get('https://kin.naver.com/qna/detail.nhn?d1id=1&dirId='+kindir+'&docId='+kindoc)
 
@@ -140,7 +138,6 @@ class MyWindow(QMainWindow):
             sql = "update kin set status = '2' where no = '" + str(kinno) + "'"
             self.curs.execute(sql)
             return
-
 
         # 답변버튼 존재할때 버튼 클릭후 딜레이
         if answer_btn.is_displayed:
@@ -161,8 +158,6 @@ class MyWindow(QMainWindow):
 
         # 답변하기
         self.answer_run()
-
-
 
     # noinspection PyMethodMayBeStatic
     def answer_run(self):
@@ -212,6 +207,42 @@ class MyWindow(QMainWindow):
             listtable.setItem(count, 3, QTableWidgetItem(row['id']))
             listtable.setItem(count, 4, QTableWidgetItem(self.mega_id))
             count += 1
+
+    def answer_list(self):
+        # 로그인 인증처리
+        if not self.login_check():
+            return
+
+        keyword = self.ui.keyword.text()
+
+        sql = "select * from kin_answer where keyword = '"+keyword+"' order by no desc"
+        self.curs.execute(sql)
+        rows = self.curs.fetchall()
+        listtable = self.ui.answerListTable
+
+        # 테이블 위젯에 행 적용
+        listtable.setRowCount(len(rows))
+
+        count = 0
+        for row in rows:
+            # 각 컬럼에 DB 값 연동처리
+            listtable.setItem(count, 0, QTableWidgetItem(row['keyword']))
+            listtable.setItem(count, 1, QTableWidgetItem(row['subject']))
+
+            count += 1
+
+    def answer_input(self):
+        # title = self.ui.ansTitle
+        content = self.ui.ansText.toPlainText()
+        keyword = self.ui.keyword.text()
+
+        sql = "insert into kin_answer (no, member_id, keyword, content) values ( null, 'solidstar', '"+keyword+"', '"+content+"') "
+        try:
+            self.ui.logArea.append(sql)
+            self.curs.execute(sql)
+            return
+        except Exception as e:
+            print(e)
 
     def while_test(self, totalcnt):
         cnt = 0
