@@ -227,7 +227,7 @@ class MyWindow(QMainWindow):
         for row in rows:
             # 각 컬럼에 DB 값 연동처리
             listtable.setItem(count, 0, QTableWidgetItem(row['keyword']))
-            listtable.setItem(count, 1, QTableWidgetItem(row['subject']))
+            listtable.setItem(count, 1, QTableWidgetItem(row['content']))
 
             count += 1
 
