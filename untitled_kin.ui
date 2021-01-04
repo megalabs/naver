@@ -30,7 +30,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -216,20 +216,10 @@
      <widget class="QTextEdit" name="ansText">
       <property name="geometry">
        <rect>
-        <x>260</x>
-        <y>120</y>
-        <width>541</width>
-        <height>351</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="ansTitle">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>40</y>
-        <width>541</width>
-        <height>31</height>
+        <x>230</x>
+        <y>300</y>
+        <width>571</width>
+        <height>191</height>
        </rect>
       </property>
      </widget>
@@ -237,7 +227,7 @@
       <property name="geometry">
        <rect>
         <x>430</x>
-        <y>490</y>
+        <y>500</y>
         <width>131</width>
         <height>31</height>
        </rect>
@@ -251,10 +241,18 @@
        <rect>
         <x>10</x>
         <y>40</y>
-        <width>241</width>
-        <height>431</height>
+        <width>791</width>
+        <height>211</height>
        </rect>
       </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <column>
+       <property name="text">
+        <string>NO</string>
+       </property>
+      </column>
       <column>
        <property name="text">
         <string>키워드</string>
@@ -269,9 +267,9 @@
      <widget class="QLineEdit" name="keyword">
       <property name="geometry">
        <rect>
-        <x>260</x>
-        <y>80</y>
-        <width>541</width>
+        <x>10</x>
+        <y>340</y>
+        <width>211</width>
         <height>31</height>
        </rect>
       </property>
@@ -279,14 +277,24 @@
      <widget class="QPushButton" name="answerListCall">
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>490</y>
+        <x>350</x>
+        <y>260</y>
         <width>111</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
        <string>리스트호출</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="answerNo">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>300</y>
+        <width>211</width>
+        <height>31</height>
+       </rect>
       </property>
      </widget>
     </widget>

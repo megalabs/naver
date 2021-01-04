@@ -28,6 +28,8 @@ class MyWindow(QMainWindow):
         self.ui.whileCheck.clicked.connect(self.thread_while_test)
         self.ui.answerUpdate.clicked.connect(self.answer_input)
         self.ui.answerListCall.clicked.connect(self.answer_list)
+
+        self.ui.answerListTable.cellClicked.connect(self.answer_clicked)
         self.conn = pymysql.connect(
             host='112.170.181.184',
             user='kin', password='ghkdgptjd2',
@@ -209,13 +211,11 @@ class MyWindow(QMainWindow):
             count += 1
 
     def answer_list(self):
-        # 로그인 인증처리
-        if not self.login_check():
-            return
 
         keyword = self.ui.keyword.text()
 
         sql = "select * from kin_answer where keyword = '"+keyword+"' order by no desc"
+        self.ui.logArea.append(sql)
         self.curs.execute(sql)
         rows = self.curs.fetchall()
         listtable = self.ui.answerListTable
@@ -226,8 +226,9 @@ class MyWindow(QMainWindow):
         count = 0
         for row in rows:
             # 각 컬럼에 DB 값 연동처리
-            listtable.setItem(count, 0, QTableWidgetItem(row['keyword']))
-            listtable.setItem(count, 1, QTableWidgetItem(row['content']))
+            listtable.setItem(count, 0, QTableWidgetItem(str(row['no'])))
+            listtable.setItem(count, 1, QTableWidgetItem(row['keyword']))
+            listtable.setItem(count, 2, QTableWidgetItem(row['content']))
 
             count += 1
 
@@ -236,13 +237,28 @@ class MyWindow(QMainWindow):
         content = self.ui.ansText.toPlainText()
         keyword = self.ui.keyword.text()
 
-        sql = "insert into kin_answer (no, member_id, keyword, content) values ( null, 'solidstar', '"+keyword+"', '"+content+"') "
+        sql = "insert into kin_answer (member_id, keyword, content) values ( %s, %s, %s) "
         try:
             self.ui.logArea.append(sql)
-            self.curs.execute(sql)
+            self.curs.execute(sql, ('solidstar', keyword, content))
+            self.conn.commit()
             return
         except Exception as e:
             print(e)
+
+    def answer_clicked(self,row,column):
+        print("Row %d and Column %d was clicked" % (row, column))
+
+        itemno = self.ui.answerListTable.item(row, 0)
+        itemkeyword = self.ui.answerListTable.item(row, 1)
+        itemcontent = self.ui.answerListTable.item(row, 2)
+
+        self.ui.answerNo.setText(itemno.text())
+        self.ui.keyword.setText(itemkeyword.text())
+        self.ui.ansText.setText(itemcontent.text())
+
+        print(itemno.text())
+
 
     def while_test(self, totalcnt):
         cnt = 0
