@@ -9,6 +9,7 @@ import pymysql
 import pyautogui
 from selenium.webdriver.common.action_chains import ActionChains
 import threading
+from selenium.webdriver.common.alert import Alert
 
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType('untitled_kin.ui')
@@ -27,13 +28,14 @@ class MyWindow(QMainWindow):
         self.ui.whileCheck.clicked.connect(self.thread_while_test)
         self.conn = pymysql.connect(
             host='112.170.181.184',
-            user='python', password='ghkdgptjd2',
-            db='python', charset='utf8'
+            user='kin', password='ghkdgptjd2',
+            db='kin', charset='utf8'
         )
         self.curs = self.conn.cursor(pymysql.cursors.DictCursor)
         self.driver = webdriver.Chrome(r'resources/chromedriver.exe')
         self.driver.get('https://naver.com')
         self.mega_id = ""
+        self.mega_keyword = "실업급여"
 
     def login_check(self):
         if self.ui.myid.text() == "solidstar" and self.ui.mypass.text() == "rhfemsqpf2":
@@ -52,17 +54,20 @@ class MyWindow(QMainWindow):
             return
 
     def fetchtest(self):
+        """
         sql = "select * from test_table"
         self.curs.execute(sql)
         result = self.curs.fetchall()
-        idset = {'id': result[0]['varchar_1'], 'pw': result[0]['varchar_2']}
+        """
+        #idset = {'id': result[0]['varchar_1'], 'pw': result[0]['varchar_2']}
+        idset = {'id': "neoalba", 'pw': "ghkdgptjd2"}
         return idset
 
     def kinfetch(self):
-        sql = "select * from kin order by no desc"
+        sql = "select * from kin where status = 0 and keyword = '"+ self.mega_keyword +"' order by no desc limit 1"
         self.curs.execute(sql)
         result = self.curs.fetchall()
-        kinset = {'dir': result[0]['dirid'], 'doc': result[0]['docid']}
+        kinset = {'no':result[0]['no'], 'dir': result[0]['dirid'], 'doc': result[0]['docid']}
         return kinset
 
     def mega_run(self):
@@ -106,16 +111,36 @@ class MyWindow(QMainWindow):
         self.ui.logArea.append("로그인버튼 클릭")
         time.sleep(1)
 
+
+
+
     def kin_run(self):
+
+        try:
+            da = Alert(self.driver)
+            da.accept()
+        except:
+            pass
+
         kinset = self.kinfetch()
         kindir = kinset['dir']
         kindoc = kinset['doc']
+        kinno = kinset['no']
+
 
         # 해당 지식인 글로 이동
         self.driver.get('https://kin.naver.com/qna/detail.nhn?d1id=1&dirId='+kindir+'&docId='+kindoc)
 
+        time.sleep(1)
+
         # 답변하기 버튼 찾기 - 있을 때만 지식인 답변 적용
-        answer_btn = self.driver.find_element_by_id('answerWriteButton')
+        try:
+            answer_btn = self.driver.find_element_by_id('answerWriteButton')
+        except:
+            sql = "update kin set status = '2' where no = '" + str(kinno) + "'"
+            self.curs.execute(sql)
+            return
+
 
         # 답변버튼 존재할때 버튼 클릭후 딜레이
         if answer_btn.is_displayed:
@@ -130,6 +155,15 @@ class MyWindow(QMainWindow):
             actions.move_to_element(answer_pos).perform()
             time.sleep(1)
 
+        # 답변하기 이전에 미리 업데이트 시켜놓아야 문제가 안생길듯 아래쪽은 브레이크 포인트가 있어서
+        sql = "update kin set status = '1' where no = '" + str(kinno) + "'"
+        self.curs.execute(sql)
+
+        # 답변하기
+        self.answer_run()
+
+
+
     # noinspection PyMethodMayBeStatic
     def answer_run(self):
         # 답변 버튼을 이미지로 제공하고 해당 이미지 찾아서 아래쪽으로 클릭
@@ -139,13 +173,29 @@ class MyWindow(QMainWindow):
         # 한글 처리를 위한 페이퍼클립 페이스트 적용
         pyperclip.copy('어쩌고 저쩌고 지화자')
         pyautogui.hotkey("ctrl", "v")
+        time.sleep(1)
+        pyautogui.click(x=v[0]+20, y=v[1]+20, clicks=1, interval=0.0, button="left")
+
+        time.sleep(2)
+        while True:
+            try:
+                captcha = self.driver.find_element_by_id('au_captcha')
+            except:
+                break
+
+            if captcha.is_displayed:
+                time.sleep(1)
+                continue
+            else:
+                break
+
 
     def kin_list(self):
         # 로그인 인증처리
         if not self.login_check():
             return
 
-        sql = "select * from kin"
+        sql = "select * from kin where status = 0 and keyword = '"+self.mega_keyword+"' order by no desc"
         self.curs.execute(sql)
         rows = self.curs.fetchall()
         listtable = self.ui.kinListTable
@@ -163,7 +213,7 @@ class MyWindow(QMainWindow):
             listtable.setItem(count, 4, QTableWidgetItem(self.mega_id))
             count += 1
 
-    def while_test(self):
+    def while_test(self, totalcnt):
         cnt = 0
         self.ui.whileCheck.setChecked(True)
         self.ui.whileCheck.setText("중지")
@@ -174,20 +224,40 @@ class MyWindow(QMainWindow):
             if not self.ui.whileCheck.isChecked():
                 self.ui.whileCheck.setText("시작")
                 break
-            if cnt == 10:
-                self.ui.whileCheck.setChecked(False)
-                self.ui.whileCheck.setText("시작")
-                break
 
-            self.naver_login()
+            self.kin_run()
             self.ui.logArea.append(str(cnt))
             time.sleep(1)
 
+            # 최대값 도달시 종료되게 처리
+            if cnt == totalcnt:
+                self.ui.whileCheck.setChecked(False)
+                self.ui.whileCheck.setText("시작")
+                self.ui.logArea.append("최대값 도달 종료")
+                break
+
     def thread_while_test(self):
+        # 테스트용 쿼리
+        # sql = "update kin set status = '0' where keyword = '실업급여' order by no desc limit 32"
+        # self.curs.execute(sql)
+
+
+        # 전체 갯수 뽑아내서 맥스값 변경후 처리
+        sql = "select count(*) as cnt from kin where status = 0 and keyword = '"+self.mega_keyword+"'"
+        self.curs.execute(sql)
+        result = self.curs.fetchone()
+        totalcnt = result['cnt']
+        self.ui.logArea.append("전체 갯수 : " + str(totalcnt))
+        self.ui.progressBar.setMaximum(totalcnt)
+
+
         if self.ui.whileCheck.isChecked():
             # t = threading.Thread(target=self.while_test, args=())
-            t = threading.Thread(target=self.while_test)
+            # 인자 하나 전달할때 리스트형 변수가 아니면 저렇게 콤마 찍어야 한다네
+            t = threading.Thread(target=self.while_test, args=(totalcnt,))
             t.start()
+
+
         else:
             self.ui.whileCheck.setText("시작")
 
