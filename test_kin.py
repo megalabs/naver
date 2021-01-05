@@ -6,7 +6,6 @@ import time
 import pyperclip
 from PyQt5 import uic
 import pymysql
-import pyautogui
 from selenium.webdriver.common.action_chains import ActionChains
 import threading
 
@@ -15,13 +14,10 @@ import os
 from PIL import Image
 import requests
 from io import BytesIO
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from twocaptcha import TwoCaptcha
-
 from selenium.webdriver.common.alert import Alert
 
-# from selenium.webdriver.common.alert import Alert
-
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType('untitled_kin.ui')
 
@@ -41,6 +37,8 @@ class MyWindow(QMainWindow):
         self.ui.answerListCall.clicked.connect(self.answer_list)
         self.ui.answerDelete.clicked.connect(self.answer_delete)
 
+        self.ui.naverTest.clicked.connect(self.naver_write_test)
+
 
         self.ui.answerListTable.cellClicked.connect(self.answer_clicked)
         self.ui.keywordList.currentIndexChanged.connect(self.keyword_changed)
@@ -53,7 +51,16 @@ class MyWindow(QMainWindow):
         )
         self.curs = self.conn.cursor(pymysql.cursors.DictCursor)
 
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("start-maximised")
+
+        # self.driver = webdriver.Chrome(r'resources/chromedriver.exe', chrome_options=chrome_options)
         self.driver = webdriver.Chrome(r'resources/chromedriver.exe')
+        self.driver.implicitly_wait(time_to_wait=5)
 
         # 처음에 빈화면인거 걸려서 그냥 넣음
         self.driver.get('https://naver.com')
@@ -101,7 +108,7 @@ class MyWindow(QMainWindow):
         result = self.curs.fetchall()
         """
         #idset = {'id': result[0]['varchar_1'], 'pw': result[0]['varchar_2']}
-        idset = {'id': "neoalba", 'pw': "ghkdgptjd2"}
+        idset = {'id': "gkrzus31542", 'pw': "aprkaprk!#%&("}
         return idset
 
     # 아이디도 조건절에 추가 되어야함
@@ -172,10 +179,11 @@ class MyWindow(QMainWindow):
         if answer_btn.is_displayed:
             try:
                 answer_btn.click()
-                time.sleep(1)
+                time.sleep(3)
+                print("답변클릭")
             except:
                 pass
-
+        """
         # 태그 엘리먼트 기준으로 스크롤 처리 위한 전초작업
         answer_pos = self.driver.find_element_by_id('tagAreaForAnswer')
 
@@ -184,6 +192,7 @@ class MyWindow(QMainWindow):
             actions = ActionChains(self.driver)
             actions.move_to_element(answer_pos).perform()
             time.sleep(1)
+        """
 
         # 답변하기 이전에 미리 업데이트 시켜놓아야 문제가 안생길듯 아래쪽은 브레이크 포인트가 있어서
         sql = "update kin set status = '1' where no = '" + str(kinno) + "'"
@@ -194,19 +203,16 @@ class MyWindow(QMainWindow):
 
     # noinspection PyMethodMayBeStatic
     def answer_run(self):
-        # 답변 버튼을 이미지로 제공하고 해당 이미지 찾아서 아래쪽으로 클릭
-        v = pyautogui.locateOnScreen("1234.png")
-        # save the extension as image
 
         answer = self.get_rand_answer()
-
-        pyautogui.click(x=v[0], y=v[1]+300, clicks=1, interval=0.0, button="left")
-        # 한글 처리를 위한 페이퍼클립 페이스트 적용
-        # pyperclip.copy('어쩌고 저쩌고 지화자')
         pyperclip.copy(answer['content'])
-        pyautogui.hotkey("ctrl", "v")
-        time.sleep(1)
-        pyautogui.click(x=v[0]+20, y=v[1]+20, clicks=1, interval=0.0, button="left")
+        actions = ActionChains(self.driver)
+        actions.key_down(Keys.CONTROL).send_keys('V').key_up(Keys.CONTROL).perform()
+
+        answer_btn = self.driver.find_element_by_class_name('_answerRegisterButton')
+        answer_btn.click()
+        self.ui.logArea.append("답변버튼 클릭")
+
 
         time.sleep(2)
 
@@ -218,6 +224,7 @@ class MyWindow(QMainWindow):
                 break
 
             if captcha.is_displayed:
+                self.ui.logArea.append("캡차출현")
                 captchaurl = self.driver.find_element_by_css_selector('.popup__captcha_image img').get_attribute('src')
                 response = requests.get(captchaurl)
                 img = Image.open(BytesIO(response.content))
@@ -230,6 +237,7 @@ class MyWindow(QMainWindow):
                     # sys.exit(e)
                     break
                 else:
+                    self.ui.logArea.append("캡차해결번호 :"+result['code'])
                     captext = self.driver.find_element_by_id('input_captcha')
                     # 요기서 한번 클리어 처리
                     captext.click()
@@ -392,7 +400,9 @@ class MyWindow(QMainWindow):
         else:
             self.ui.whileCheck.setText("시작")
 
-
+    # 단순 테스트 버튼 활성화
+    def naver_write_test(self):
+        return
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
