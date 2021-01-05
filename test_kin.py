@@ -43,6 +43,10 @@ class MyWindow(QMainWindow):
         self.ui.answerListTable.cellClicked.connect(self.answer_clicked)
         self.ui.keywordList.currentIndexChanged.connect(self.keyword_changed)
 
+        # frame 추가해서 지식인리스트 클릭하면 새창에서 수정할 수 있도록 추가 JJR 2021-01-05
+        self.answer_frame_hide()
+        self.ui.answerFrameClose.clicked.connect(self.answer_frame_hide)
+        self.ui.answerwriteBtn.clicked.connect(self.answer_input_form)
 
         self.conn = pymysql.connect(
             host='112.170.181.184',
@@ -69,7 +73,8 @@ class MyWindow(QMainWindow):
 
         self.mega_id = ""
 
-        self.mykeyword = ["요", "실업급여", "이혼", "홈페이지제작"]
+        # DB에서 뽑아오는걸로 수정 JJR 2021-01-05
+        # self.mykeyword = ["요", "실업급여", "이혼", "홈페이지제작"]
         self.mega_keyword = "요"
         self.init_keyword()
 
@@ -78,8 +83,15 @@ class MyWindow(QMainWindow):
         return iscap
 
     def init_keyword(self):
-        for key in self.mykeyword:
-            self.ui.keywordList.addItem(key)
+        # DB에서 뽑아오는걸로 수정 JJR 2021-01-05
+        sql = "select distinct(keyword) from kin_answer where member_id='"+self.ui.myid.text()+"'"
+        self.curs.execute(sql)
+        result = self.curs.fetchall()
+
+        # 키워드가 작동중에 바뀌면 새로 불러오려고 clear 시킴 JJR 2021-01-05
+        self.ui.keywordList.clear()
+        for key in result:
+            self.ui.keywordList.addItem(key['keyword'])
 
     def keyword_changed(self):
         self.mega_keyword = self.ui.keywordList.currentText()
@@ -321,13 +333,18 @@ class MyWindow(QMainWindow):
             QMessageBox.about(self, "상태메시지", "삭제완료")
             self.ui.ansText.clear()
             self.ui.answerNo.clear()
+            
+            # 저장 후에 프레임 닫고 키워드리스트 다시불러오기 JJR 2021-01-05
+            self.answer_frame_hide()
+            self.init_keyword()
+            
             self.answer_list()
 
     def answer_input(self):
         # title = self.ui.ansTitle
         content = self.ui.ansText.toPlainText()
         # keyword = self.ui.keyword.text()
-        keyword = self.mega_keyword
+        keyword = self.ui.keyword.text()
         insertno = self.ui.answerNo.text()
 
         if insertno:
@@ -339,12 +356,22 @@ class MyWindow(QMainWindow):
         try:
             self.ui.logArea.append(sql)
             self.conn.commit()
+
+            # 저장 후에 프레임 닫고 키워드,글리스트 재호출해서 바뀐데이터 불러오기 JJR 2021-01-05
+            self.answer_frame_hide()
+            self.init_keyword()
+            self.answer_list()
+
             return
         except Exception as e:
             print(e)
 
+
+
     def answer_clicked(self,row,column):
         print("Row %d and Column %d was clicked" % (row, column))
+
+        self.ui.answerFrame.show()
 
         itemno = self.ui.answerListTable.item(row, 0)
         itemkeyword = self.ui.answerListTable.item(row, 1)
@@ -355,6 +382,15 @@ class MyWindow(QMainWindow):
         self.ui.ansText.setText(itemcontent.text())
 
         print(itemno.text())
+
+    def answer_input_form(self):
+
+        self.ui.answerFrame.show()
+
+        self.ui.answerNo.setText("")
+        self.ui.keyword.setText("")
+        self.ui.ansText.setText("")
+
 
     def while_test(self, totalcnt):
         cnt = 0
@@ -403,6 +439,11 @@ class MyWindow(QMainWindow):
     # 단순 테스트 버튼 활성화
     def naver_write_test(self):
         return
+
+    # 답변수정 프레임 숨기기 JJR 2021-01-05
+    def answer_frame_hide(self):
+        self.ui.answerFrame.hide()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
