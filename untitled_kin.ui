@@ -59,6 +59,9 @@
         <height>23</height>
        </rect>
       </property>
+      <property name="text">
+       <string>solidstar</string>
+      </property>
       <property name="placeholderText">
        <string> 아이디</string>
       </property>
@@ -74,6 +77,9 @@
       </property>
       <property name="contextMenuPolicy">
        <enum>Qt::DefaultContextMenu</enum>
+      </property>
+      <property name="text">
+       <string>rhfemsqpf2</string>
       </property>
       <property name="echoMode">
        <enum>QLineEdit::Password</enum>
@@ -226,7 +232,7 @@
      <widget class="QPushButton" name="answerUpdate">
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>310</x>
         <y>500</y>
         <width>131</width>
         <height>31</height>
@@ -293,6 +299,29 @@
         <x>10</x>
         <y>300</y>
         <width>211</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="answerDelete">
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>500</y>
+        <width>131</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>삭제</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="keywordList">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>390</y>
+        <width>191</width>
         <height>31</height>
        </rect>
       </property>
