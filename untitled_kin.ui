@@ -59,6 +59,9 @@
         <height>23</height>
        </rect>
       </property>
+      <property name="text">
+       <string>solidstar</string>
+      </property>
       <property name="placeholderText">
        <string> 아이디</string>
       </property>
@@ -74,6 +77,9 @@
       </property>
       <property name="contextMenuPolicy">
        <enum>Qt::DefaultContextMenu</enum>
+      </property>
+      <property name="text">
+       <string>rhfemsqpf2</string>
       </property>
       <property name="echoMode">
        <enum>QLineEdit::Password</enum>
@@ -125,6 +131,25 @@
       </property>
       <property name="value">
        <number>0</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="naverTest">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>30</y>
+        <width>91</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>테스트</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
       </property>
      </widget>
      <widget class="QSplitter" name="splitter_2">
@@ -226,7 +251,7 @@
      <widget class="QPushButton" name="answerUpdate">
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>310</x>
         <y>500</y>
         <width>131</width>
         <height>31</height>
@@ -293,6 +318,29 @@
         <x>10</x>
         <y>300</y>
         <width>211</width>
+        <height>31</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="answerDelete">
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>500</y>
+        <width>131</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>삭제</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="keywordList">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>390</y>
+        <width>191</width>
         <height>31</height>
        </rect>
       </property>
