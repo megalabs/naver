@@ -104,11 +104,12 @@ class MyWindow(QMainWindow):
 
     def login_check(self):
         # 디비에서 가지고 오도록 처리 JJR 2021-01-06
-        sql = "select member_pw from kin_member where member_id='" + self.ui.myid.text() + "'"
+        sql = "select count(*) as cnt from g5_member"
+        sql += " where mb_id='" + self.ui.myid.text()+"' and mb_password=password('"+self.ui.mypass.text()+"')"
         self.curs.execute(sql)
         result = self.curs.fetchone()
 
-        if self.ui.mypass.text() == result['member_pw']:
+        if result['cnt'] > 0:
             self.mega_id = self.ui.myid.text()
             self.ui.logArea.append(self.mega_id)
             self.init_keyword()
