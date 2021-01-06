@@ -75,7 +75,8 @@ class MyWindow(QMainWindow):
 
         # DB에서 뽑아오는걸로 수정 JJR 2021-01-05
         # self.mykeyword = ["요", "실업급여", "이혼", "홈페이지제작"]
-        self.mega_keyword = "요"
+        # self.mega_keyword = "요"
+        self.mega_keyword = ""
         self.init_keyword()
 
     def get_captcha(self):
@@ -87,14 +88,20 @@ class MyWindow(QMainWindow):
         sql = "select distinct(keyword) from kin_answer where member_id='"+self.ui.myid.text()+"'"
         self.curs.execute(sql)
         result = self.curs.fetchall()
+        keyword = self.mega_keyword
 
         # 키워드가 작동중에 바뀌면 새로 불러오려고 clear 시킴 JJR 2021-01-05
         self.ui.keywordList.clear()
+        self.ui.keywordList.addItem("")
         for key in result:
             self.ui.keywordList.addItem(key['keyword'])
 
+        self.ui.keywordList.setCurrentText(keyword)
+
     def keyword_changed(self):
         self.mega_keyword = self.ui.keywordList.currentText()
+        # 키워드 바뀔 때 바로바로 리스트 호출 JJR 2021-01-06
+        self.answer_list()
 
     def login_check(self):
         # 디비에서 가지고 와야함
@@ -306,7 +313,10 @@ class MyWindow(QMainWindow):
         # keyword = self.ui.keyword.text()
         keyword = self.mega_keyword
 
-        sql = "select * from kin_answer where keyword = '"+keyword+"' order by no desc"
+        if self.mega_keyword:
+            sql = "select * from kin_answer where member_id='"+self.ui.myid.text()+"' and keyword = '"+keyword+"' order by no desc"
+        else:
+            sql = "select * from kin_answer where member_id='"+self.ui.myid.text()+"' order by no desc"
         self.ui.logArea.append(sql)
         self.curs.execute(sql)
         rows = self.curs.fetchall()
@@ -345,6 +355,8 @@ class MyWindow(QMainWindow):
         content = self.ui.ansText.toPlainText()
         # keyword = self.ui.keyword.text()
         keyword = self.ui.keyword.text()
+
+        self.selected_keyword = self.ui.keyword.text()
         insertno = self.ui.answerNo.text()
 
         if insertno:
