@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>ChildWindow</class>
+ <widget class="QMainWindow" name="ChildWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>841</width>
-    <height>620</height>
+    <height>624</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -257,7 +257,17 @@
       </column>
       <column>
        <property name="text">
-        <string>키워드</string>
+        <string>메인키워드</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>서브키워드</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>매칭갯수</string>
        </property>
       </column>
       <column>
@@ -286,9 +296,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
+        <y>0</y>
         <width>791</width>
-        <height>441</height>
+        <height>511</height>
        </rect>
       </property>
       <property name="palette">
@@ -788,13 +798,28 @@
        </property>
       </widget>
       <widget class="QLineEdit" name="answerNo">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>40</x>
          <y>40</y>
-         <width>211</width>
-         <height>31</height>
+         <width>0</width>
+         <height>0</height>
         </rect>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
        </property>
       </widget>
       <widget class="QLineEdit" name="keyword">
@@ -802,7 +827,7 @@
         <rect>
          <x>40</x>
          <y>80</y>
-         <width>211</width>
+         <width>111</width>
          <height>31</height>
         </rect>
        </property>
@@ -818,6 +843,74 @@
        </property>
        <property name="text">
         <string>닫기</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="keyword_sub">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>80</y>
+         <width>381</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="keyword_match_cnt">
+       <property name="geometry">
+        <rect>
+         <x>550</x>
+         <y>80</y>
+         <width>51</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>550</x>
+         <y>60</y>
+         <width>51</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>매칭갯수 </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>60</y>
+         <width>61</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>서브키워드</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_3">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>60</y>
+         <width>61</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>메인키워드</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </widget>
@@ -844,39 +937,17 @@
        <string>답변추가</string>
       </property>
      </widget>
+     <zorder>answerwriteBtn</zorder>
      <zorder>answerListTable</zorder>
      <zorder>answerListCall</zorder>
      <zorder>keywordList</zorder>
      <zorder>answerFrame</zorder>
-     <zorder>answerwriteBtn</zorder>
     </widget>
     <widget class="QWidget" name="tab_6">
      <attribute name="title">
       <string>상세 설정</string>
      </attribute>
     </widget>
-   </widget>
-   <widget class="QFrame" name="frame">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>550</y>
-      <width>120</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>120</width>
-      <height>16777215</height>
-     </size>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

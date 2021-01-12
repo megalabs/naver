@@ -79,6 +79,9 @@ class MyWindow(QMainWindow):
         self.mega_keyword = ""
         self.init_keyword()
 
+        # 테이블 마지막 셀 끝까지 딱 맞게 JJR 2021-01-12
+        self.ui.answerListTable.horizontalHeader().setStretchLastSection(True)
+
     def get_captcha(self):
         iscap = self.driver.find_element_by_css_selector('.popup__captcha_image img').get_attribute('src')
         return iscap
@@ -105,6 +108,10 @@ class MyWindow(QMainWindow):
 
     def login_check(self):
         # 디비에서 가지고 와야함
+        sql = "select count(*) as cnt from kin where status = 0 and keyword = '" + self.mega_keyword + "'"
+        self.curs.execute(sql)
+        result = self.curs.fetchone()
+
         if self.ui.myid.text() == "solidstar" and self.ui.mypass.text() == "rhfemsqpf2":
             self.mega_id = self.ui.myid.text()
             self.ui.logArea.append(self.mega_id)
@@ -117,6 +124,8 @@ class MyWindow(QMainWindow):
         # 로그인 인증처리
         if self.login_check():
             QMessageBox.about(self, "로그인성공", "로그인성공")
+            self.ui.loginFrame.hide()
+
         else:
             return
     # 네이버 아이디 가져오기 모듈명도 바꿔야함
@@ -330,7 +339,9 @@ class MyWindow(QMainWindow):
             # 각 컬럼에 DB 값 연동처리
             listtable.setItem(count, 0, QTableWidgetItem(str(row['no'])))
             listtable.setItem(count, 1, QTableWidgetItem(row['keyword']))
-            listtable.setItem(count, 2, QTableWidgetItem(row['content']))
+            listtable.setItem(count, 2, QTableWidgetItem(row['keyword_sub']))
+            listtable.setItem(count, 3, QTableWidgetItem(row['keyword_match_cnt']))
+            listtable.setItem(count, 4, QTableWidgetItem(row['content']))
 
             count += 1
 
@@ -355,16 +366,19 @@ class MyWindow(QMainWindow):
         content = self.ui.ansText.toPlainText()
         # keyword = self.ui.keyword.text()
         keyword = self.ui.keyword.text()
+        keyword_sub = self.ui.keyword_sub.text()
+        keyword_match_cnt = self.ui.keyword_match_cnt.text()
 
         self.selected_keyword = self.ui.keyword.text()
         insertno = self.ui.answerNo.text()
 
         if insertno:
-            sql = "update kin_answer set content = %s where no = %s"
-            self.curs.execute(sql, (content, int(insertno)))
+            sql = "update kin_answer set keyword_sub=%s, keyword_match_cnt=%s, content = %s where no = %s"
+            self.curs.execute(sql, (keyword_sub, keyword_match_cnt, content, int(insertno)))
         else:
-            sql = "insert into kin_answer (member_id, keyword, content) values ( %s, %s, %s) "
-            self.curs.execute(sql, ('solidstar', keyword, content))
+            sql = "insert into kin_answer (member_id, keyword, keyword_sub, keyword_match_cnt, content)"
+            sql += "values ( %s, %s, %s, %s, %s) "
+            self.curs.execute(sql, ('solidstar', keyword, keyword_sub, keyword_match_cnt, content))
         try:
             self.ui.logArea.append(sql)
             self.conn.commit()
@@ -387,10 +401,14 @@ class MyWindow(QMainWindow):
 
         itemno = self.ui.answerListTable.item(row, 0)
         itemkeyword = self.ui.answerListTable.item(row, 1)
-        itemcontent = self.ui.answerListTable.item(row, 2)
+        itemkeyword_sub = self.ui.answerListTable.item(row, 2)
+        itemkeyword_match_cnt = self.ui.answerListTable.item(row, 3)
+        itemcontent = self.ui.answerListTable.item(row, 4)
 
         self.ui.answerNo.setText(itemno.text())
         self.ui.keyword.setText(itemkeyword.text())
+        self.ui.keyword_sub.setText(itemkeyword_sub.text())
+        self.ui.keyword_match_cnt.setText(itemkeyword_match_cnt.text())
         self.ui.ansText.setText(itemcontent.text())
 
         print(itemno.text())
@@ -401,6 +419,8 @@ class MyWindow(QMainWindow):
 
         self.ui.answerNo.setText("")
         self.ui.keyword.setText("")
+        self.ui.keyword_sub.setText("")
+        self.ui.keyword_match_cnt.setText("")
         self.ui.ansText.setText("")
 
 
