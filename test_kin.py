@@ -31,10 +31,12 @@ class MyWindow(QMainWindow):
         self.ui.megalogin.clicked.connect(self.login_test)
         self.ui.kinButton.clicked.connect(self.kin_run)
         self.ui.answerButton.clicked.connect(self.answer_run)
-        self.ui.kinListCall.clicked.connect(self.kin_list)
+        # 버튼삭제 JJR 2021-01-13
+        # self.ui.kinListCall.clicked.connect(self.kin_list)
         self.ui.whileCheck.clicked.connect(self.thread_while_test)
         self.ui.answerUpdate.clicked.connect(self.answer_input)
-        self.ui.answerListCall.clicked.connect(self.answer_list)
+        # 버튼삭제 JJR 2021-01-13
+        # self.ui.answerListCall.clicked.connect(self.answer_list)
         self.ui.answerDelete.clicked.connect(self.answer_delete)
 
         self.ui.naverTest.clicked.connect(self.naver_write_test)
@@ -42,6 +44,9 @@ class MyWindow(QMainWindow):
 
         self.ui.answerListTable.cellClicked.connect(self.answer_clicked)
         self.ui.keywordList.currentIndexChanged.connect(self.keyword_changed)
+
+        # 지식인 글로 바로 이동
+        self.ui.kinListTable.cellClicked.connect(self.move_kin_view)
 
         # frame 추가해서 지식인리스트 클릭하면 새창에서 수정할 수 있도록 추가 JJR 2021-01-05
         self.answer_frame_hide()
@@ -81,6 +86,7 @@ class MyWindow(QMainWindow):
 
         # 테이블 마지막 셀 끝까지 딱 맞게 JJR 2021-01-12
         self.ui.answerListTable.horizontalHeader().setStretchLastSection(True)
+        self.ui.kinListTable.horizontalHeader().setStretchLastSection(True)
 
     def get_captcha(self):
         iscap = self.driver.find_element_by_css_selector('.popup__captcha_image img').get_attribute('src')
@@ -105,6 +111,7 @@ class MyWindow(QMainWindow):
         self.mega_keyword = self.ui.keywordList.currentText()
         # 키워드 바뀔 때 바로바로 리스트 호출 JJR 2021-01-06
         self.answer_list()
+        self.kin_list()
 
     def login_check(self):
         # 디비에서 가지고 와야함
@@ -124,8 +131,6 @@ class MyWindow(QMainWindow):
         # 로그인 인증처리
         if self.login_check():
             QMessageBox.about(self, "로그인성공", "로그인성공")
-            self.ui.loginFrame.hide()
-
         else:
             return
     # 네이버 아이디 가져오기 모듈명도 바꿔야함
@@ -313,8 +318,8 @@ class MyWindow(QMainWindow):
             listtable.setItem(count, 0, QTableWidgetItem(str(row['no'])))
             listtable.setItem(count, 1, QTableWidgetItem(row['subject']))
             listtable.setItem(count, 2, QTableWidgetItem(row['content']))
-            listtable.setItem(count, 3, QTableWidgetItem(row['id']))
-            listtable.setItem(count, 4, QTableWidgetItem(self.mega_id))
+            # listtable.setItem(count, 3, QTableWidgetItem(row['keyword']))
+            # listtable.setItem(count, 4, QTableWidgetItem(self.mega_id))
             count += 1
 
     def answer_list(self):
@@ -475,6 +480,18 @@ class MyWindow(QMainWindow):
     # 답변수정 프레임 숨기기 JJR 2021-01-05
     def answer_frame_hide(self):
         self.ui.answerFrame.hide()
+
+    # 지식인 글로 바로 이동
+    def move_kin_view(self, row, column):
+        print("Row %d and Column %d was clicked" % (row, column))
+        kin_idx = self.ui.kinListTable.item(row, 0)
+
+        sql = "select * from kin where no = '" + kin_idx.text() + "'"
+        self.curs.execute(sql)
+        result = self.curs.fetchone()
+        self.driver.get('https://kin.naver.com/qna/detail.nhn?d1id=1&dirId=' + result['dirid'] + '&docId=' + result['docid'])
+
+        time.sleep(1)
 
 
 if __name__ == "__main__":

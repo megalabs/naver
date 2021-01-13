@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>841</width>
-    <height>624</height>
+    <width>831</width>
+    <height>671</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>90</y>
       <width>821</width>
       <height>561</height>
      </rect>
@@ -30,64 +30,12 @@
      </sizepolicy>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>답변 자동 등록</string>
      </attribute>
-     <widget class="QPushButton" name="megalogin">
-      <property name="geometry">
-       <rect>
-        <x>703</x>
-        <y>10</y>
-        <width>75</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>로그인
-테스트</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="myid">
-      <property name="geometry">
-       <rect>
-        <x>560</x>
-        <y>10</y>
-        <width>137</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>solidstar</string>
-      </property>
-      <property name="placeholderText">
-       <string> 아이디</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="mypass">
-      <property name="geometry">
-       <rect>
-        <x>560</x>
-        <y>40</y>
-        <width>136</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="contextMenuPolicy">
-       <enum>Qt::DefaultContextMenu</enum>
-      </property>
-      <property name="text">
-       <string>rhfemsqpf2</string>
-      </property>
-      <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
-      </property>
-      <property name="placeholderText">
-       <string> 패스워드</string>
-      </property>
-     </widget>
      <widget class="QTextBrowser" name="logArea">
       <property name="geometry">
        <rect>
@@ -189,9 +137,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
+        <y>10</y>
         <width>801</width>
-        <height>451</height>
+        <height>521</height>
        </rect>
       </property>
       <column>
@@ -209,29 +157,6 @@
         <string>내용</string>
        </property>
       </column>
-      <column>
-       <property name="text">
-        <string>키워드</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>아이디</string>
-       </property>
-      </column>
-     </widget>
-     <widget class="QPushButton" name="kinListCall">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>141</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>리스트갱신</string>
-      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_5">
@@ -244,7 +169,7 @@
         <x>10</x>
         <y>50</y>
         <width>791</width>
-        <height>211</height>
+        <height>481</height>
        </rect>
       </property>
       <property name="selectionBehavior">
@@ -276,17 +201,17 @@
        </property>
       </column>
      </widget>
-     <widget class="QPushButton" name="answerListCall">
+     <widget class="QPushButton" name="answerwriteBtn">
       <property name="geometry">
        <rect>
-        <x>210</x>
+        <x>10</x>
         <y>10</y>
         <width>111</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>리스트호출</string>
+       <string>답변추가</string>
       </property>
      </widget>
      <widget class="QFrame" name="answerFrame">
@@ -295,10 +220,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>0</y>
-        <width>791</width>
-        <height>511</height>
+        <width>811</width>
+        <height>531</height>
        </rect>
       </property>
       <property name="palette">
@@ -914,39 +839,101 @@
        </property>
       </widget>
      </widget>
-     <widget class="QComboBox" name="keywordList">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>191</width>
-        <height>31</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="answerwriteBtn">
-      <property name="geometry">
-       <rect>
-        <x>325</x>
-        <y>10</y>
-        <width>111</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>답변추가</string>
-      </property>
-     </widget>
      <zorder>answerwriteBtn</zorder>
      <zorder>answerListTable</zorder>
-     <zorder>answerListCall</zorder>
-     <zorder>keywordList</zorder>
      <zorder>answerFrame</zorder>
     </widget>
     <widget class="QWidget" name="tab_6">
      <attribute name="title">
       <string>상세 설정</string>
      </attribute>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>10</y>
+      <width>211</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>키워드</string>
+    </property>
+    <widget class="QComboBox" name="keywordList">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>191</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>371</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>로그인</string>
+    </property>
+    <widget class="QPushButton" name="megalogin">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>20</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>로그인 테스트</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="myid">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>solidstar</string>
+     </property>
+     <property name="placeholderText">
+      <string> 아이디</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="mypass">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::DefaultContextMenu</enum>
+     </property>
+     <property name="text">
+      <string>rhfemsqpf2</string>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string> 패스워드</string>
+     </property>
     </widget>
    </widget>
   </widget>
